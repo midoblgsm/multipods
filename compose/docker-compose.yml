@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    image: midoblgsm/react-products:compose
+    ports:
+      - '8989:80'
+  products:
+    image: midoblgsm/go-products:compose
+    ports:
+      - '9999:9999'
+  ratings:
+    image: midoblgsm/go-ratings:compose
+    ports:
+      - '9998:9998'
