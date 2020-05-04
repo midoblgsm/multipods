@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ingress-gateway-configuration
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - 'products.example' # Domain name of the external website, if you are using minkube, please update your /etc/hosts to point this to minikube ip
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  hosts: # which incoming host are we applying the proxy rules to???
+    - 'products.example' # Copy the value in the gateway hosts - usually a Domain Name
+  gateways:
+    - ingress-gateway-configuration
+  http:
+    - route:
+        - destination:
+            host: frontend
+            subset: original
+          weight: 100
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  host: frontend
+  subsets:
+    - labels:
+        version: 'k8s1'
+      name: original
