@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ratings
+    version: 'k8s1'
+  name: ratings
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratings
+      version: 'k8s1'
+  template:
+    metadata:
+      labels:
+        app: ratings
+        version: 'k8s1'
+    spec:
+      containers:
+        - image: midoblgsm/go-ratings:k8s1
+          name: ratings
+          ports:
+            - containerPort: 9998
